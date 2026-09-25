@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LABIIB AL GHOFFUUR | Cybersecurity & Polyglot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        :root {
+            --primary-blue: #0066ff;
+            --primary-cyan: #00ccff;
+            --dark-bg: #050814;
+            --card-bg: rgba(10, 20, 50, 0.7);
+            --text-white: #ffffff;
+            --text-gray: #a0aabf;
+            --border-color: rgba(0, 102, 255, 0.3);
+            --shadow: rgba(0, 102, 255, 0.2);
+        }
+
+        /* LIGHT MODE VARIABLES */
+        body.light-mode {
+            --dark-bg: #f0f4f8;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-white: #1a1a2e;
+            --text-gray: #4a5568;
+            --border-color: rgba(0, 102, 255, 0.2);
+            --shadow: rgba(0, 102, 255, 0.1);
+        }
+
+        html { scroll-behavior: smooth; }
+        body { background: var(--dark-bg); color: var(--text-white); overflow-x: hidden; position: relative; transition: background 0.3s, color 0.3s; }
+
+        .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 3s infinite; }
+        body.light-mode .star { background: #0066ff; opacity: 0.3; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease-out; }
+        .loading-screen.hidden { opacity: 0; pointer-events: none; }
+        .lightning { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.15); opacity: 0; animation: flash 0.15s 4; }
+        @keyframes flash { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+        .loading-text { font-size: clamp(1.2rem, 4vw, 2rem); font-weight: bold; z-index: 2; color: var(--primary-cyan); text-shadow: 0 0 10px var(--primary-blue); text-align: center; padding: 0 20px; }
+        .loading-bar { width: 250px; max-width: 80%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-top: 20px; z-index: 2; }
+        .loading-progress { height: 100%; background: linear-gradient(90deg, var(--primary-blue), var(--primary-cyan)); width: 0%; transition: width 0.2s; box-shadow: 0 0 10px var(--primary-cyan); }
+
+        .nav-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--card-bg); backdrop-filter: blur(12px); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--border-color); width: max-content; max-width: 95%; display: flex; align-items: center; gap: 10px; transition: background 0.3s; }
+        .skull-icon { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; background: var(--dark-bg); padding: 5px; border-radius: 50%; }
+        nav { display: flex; gap: 5px; }
+        nav a { color: var(--text-gray); text-decoration: none; font-weight: 500; transition: all 0.3s; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; }
+        nav a:hover, nav a.active { color: var(--text-white); background: rgba(0, 102, 255, 0.2); }
+        
+        .nav-btn { background: transparent; border: 1px solid var(--primary-blue); color: var(--primary-cyan); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.8rem; transition: all 0.3s; white-space: nowrap; }
+        .nav-btn:hover { background: var(--primary-blue); color: white; }
+
+        section { min-height: 100vh; padding: 120px 5% 60px; position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; }
+        .section-title { font-size: clamp(2rem, 5vw, 3rem); text-align: center; margin-bottom: 50px; background: linear-gradient(135deg, var(--text-white), var(--primary-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+
+        #home { flex-direction: row; align-items: center; justify-content: space-between; gap: 50px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .home-content { flex: 1; text-align: left; }
+        .home-content h1 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 15px; background: linear-gradient(135deg, var(--text-white) 0%, var(--primary-blue) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .home-content .tagline { font-size: clamp(1rem, 2vw, 1.3rem); color: var(--primary-cyan); margin-bottom: 10px; font-weight: 600; }
+        .home-content .role { font-size: 1rem; color: var(--text-gray); margin-bottom: 20px; letter-spacing: 1px; }
+        .home-content p { font-size: 1rem; line-height: 1.7; color: var(--text-gray); margin-bottom: 30px; max-width: 600px; }
+        
+        .btn-group { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .btn { padding: 12px 28px; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block; font-size: 1rem; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary-blue), var(--primary-cyan)); color: white; box-shadow: 0 4px 15px var(--shadow); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--shadow); }
+        .btn-secondary { background: transparent; color: var(--primary-cyan); border: 2px solid var(--primary-blue); }
+        .btn-secondary:hover { background: var(--primary-blue); color: white; }
+
+        .social-links { display: flex; gap: 15px; }
+        .social-links a { width: 42px; height: 42px; border-radius: 50%; background: var(--card-bg); display: flex; align-items: center; justify-content: center; color: var(--text-gray); transition: all 0.3s; border: 1px solid var(--border-color); font-size: 1.2rem; text-decoration: none; }
+        .social-links a:hover { background: var(--primary-blue); color: white; transform: translateY(-3px); }
+
+        .profile-container { flex: 1; display: flex; justify-content: center; align-items: center; }
+        .profile-wrapper { position: relative; width: 350px; height: 450px; border-radius: 20px; overflow: hidden; box-shadow: 0 0 30px var(--shadow); cursor: pointer; border: 2px solid var(--border-color); background: var(--card-bg); }
+        .profile-img { width: 100%; height: 100%; object-fit: cover; transition: all 0.5s; position: absolute; top: 0; left: 0; }
+        .profile-img.formal { opacity: 1; z-index: 2; }
+        .profile-img.hacker { opacity: 0; z-index: 1; }
+        .profile-wrapper:hover .profile-img.formal, .profile-wrapper.revealed .profile-img.formal { opacity: 0; }
+        .profile-wrapper:hover .profile-img.hacker, .profile-wrapper.revealed .profile-img.hacker { opacity: 1; animation: glitch 0.4s ease-in-out; }
+        @keyframes glitch { 0%, 100% { transform: translate(0); filter: hue-rotate(0deg); } 25% { transform: translate(-5px, 5px); filter: hue-rotate(90deg); } 50% { transform: translate(5px, -5px); filter: hue-rotate(180deg); } 75% { transform: translate(-5px, -5px); filter: hue-rotate(270deg); } }
+        .profile-hint { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: rgba(0, 102, 255, 0.8); padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; opacity: 0; transition: opacity 0.3s; z-index: 3; white-space: nowrap; }
+        .profile-wrapper:hover .profile-hint { opacity: 1; }
+
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .about-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); backdrop-filter: blur(5px); transition: background 0.3s; }
+        .about-card h3 { color: var(--primary-cyan); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .about-card ul { list-style: none; }
+        .about-card ul li { padding: 8px 0; border-bottom: 1px solid var(--border-color); color: var(--text-gray); font-size: 0.95rem; display: flex; align-items: center; }
+        .about-card ul li:before { content: "▹"; color: var(--primary-blue); margin-right: 10px; font-weight: bold; }
+
+        .stats-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 50px; max-width: 1000px; margin-left: auto; margin-right: auto; width: 100%; }
+        .stat-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--primary-blue); }
+        .stat-number { font-size: 3rem; font-weight: bold; color: var(--primary-cyan); margin-bottom: 5px; }
+        .stat-label { color: var(--text-gray); font-size: 0.9rem; }
+
+        .portfolio-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 25px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-gray); border-radius: 25px; cursor: pointer; transition: all 0.3s; font-weight: 500; font-size: 0.9rem; }
+        .tab-btn.active, .tab-btn:hover { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        .portfolio-content { display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .portfolio-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .project-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid var(--border-color); transition: all 0.3s; display: flex; flex-direction: column; }
+        .project-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px var(--shadow); border-color: var(--primary-blue); }
+        .project-icon { width: 100%; height: 120px; background: linear-gradient(135deg, var(--primary-blue), var(--primary-cyan)); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; }
+        .project-info { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .project-info h3 { color: var(--primary-cyan); margin-bottom: 10px; font-size: 1.2rem; }
+        .project-info p { color: var(--text-gray); font-size: 0.9rem; line-height: 1.5; flex: 1; }
+
+        /* CERTIFICATES WITH IMAGES */
+        .certificates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .certificate-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid var(--border-color); transition: all 0.3s; cursor: pointer; }
+        .certificate-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px var(--shadow); border-color: var(--primary-blue); }
+        .certificate-img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid var(--border-color); }
+        .certificate-info { padding: 20px; }
+        .certificate-info h3 { color: var(--primary-cyan); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .certificate-info p { color: var(--text-gray); font-size: 0.85rem; line-height: 1.5; }
+        .certificate-info .year { color: var(--primary-blue); font-weight: bold; margin-top: 10px; display: block; font-size: 0.8rem; }
+
+        /* LIGHTBOX FOR CERTIFICATES */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .lightbox.active { display: flex; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,102,255,0.5); }
+        .lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; background: rgba(0,102,255,0.5); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .lightbox-close:hover { background: var(--primary-blue); transform: rotate(90deg); }
+
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+        .tech-category { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
+        .tech-category h4 { color: var(--primary-cyan); margin-bottom: 20px; text-align: center; font-size: 1.2rem; }
+        .tech-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .tech-item { background: rgba(0, 102, 255, 0.1); padding: 8px 18px; border-radius: 20px; font-size: 0.9rem; border: 1px solid var(--border-color); transition: all 0.3s; color: var(--text-white); }
+        .tech-item:hover { background: var(--primary-blue); transform: translateY(-2px); }
+
+        .contact-container { max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid var(--border-color); width: 100%; backdrop-filter: blur(10px); }
+        .contact-form { display: flex; flex-direction: column; gap: 15px; }
+        .contact-form input, .contact-form textarea { padding: 15px; background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-white); font-size: 1rem; width: 100%; transition: all 0.3s; }
+        .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--primary-cyan); box-shadow: 0 0 10px rgba(0, 204, 255, 0.2); }
+        .contact-form textarea { min-height: 120px; resize: vertical; }
+        .find-me { margin-top: 40px; text-align: center; }
+        .find-me h3 { margin-bottom: 20px; color: var(--primary-cyan); }
+        .find-me .social-links { justify-content: center; }
+        .find-me .email-text { margin-top: 20px; color: var(--text-gray); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+
+        footer { text-align: center; padding: 30px 20px; background: var(--card-bg); color: var(--text-gray); border-top: 1px solid var(--border-color); font-size: 0.9rem; position: relative; z-index: 1; }
+
+        @media (max-width: 900px) {
+            #home { flex-direction: column; text-align: center; padding-top: 100px; }
+            .home-content { text-align: center; }
+            .home-content p { margin: 0 auto 30px; }
+            .btn-group { justify-content: center; }
+            .social-links { justify-content: center; }
+            .profile-wrapper { width: 280px; height: 360px; margin-top: 20px; }
+        }
+        @media (max-width: 768px) {
+            .nav-container { bottom: 20px; top: auto; padding: 8px 10px; gap: 5px; }
+            .skull-icon { display: none; }
+            nav a { padding: 6px 8px; font-size: 0.75rem; }
+            .nav-btn { padding: 5px 8px; font-size: 0.7rem; }
+            section { padding: 80px 5% 100px; }
+            .about-grid { grid-template-columns: 1fr; }
+            .stats-container { grid-template-columns: 1fr; gap: 15px; }
+            .contact-container { padding: 25px; }
+            .projects-grid, .certificates-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="lightning"></div>
+        <div class="loading-text" data-i18n="loading">INITIALIZING SYSTEM...</div>
+        <div class="loading-bar"><div class="loading-progress" id="loadingProgress"></div></div>
+    </div>
+
+    <div class="stars" id="stars"></div>
+
+    <div class="nav-container">
+        <div class="skull-icon">💀</div>
+        <nav>
+            <a href="#home" class="active" data-i18n="nav_home">Home</a>
+            <a href="#about" data-i18n="nav_about">About</a>
+            <a href="#portfolio" data-i18n="nav_portfolio">Portfolio</a>
+            <a href="#contact" data-i18n="nav_contact">Contact</a>
+        </nav>
+        <button class="nav-btn" id="themeToggle">🌙</button>
+        <button class="nav-btn" id="langToggle">🌐 EN</button>
+    </div>
+
+    <section id="home">
+        <div class="home-content">
+            <h1 data-i18n="home_title">Hi, I'm<br>LABIIB AL<br>GHOFFUUR</h1>
+            <p class="tagline" data-i18n="home_tagline">Membangun Generasi Bangsa yang Berdaya Melalui Teknologi & Keamanan Siber</p>
+            <p class="role" data-i18n="home_role">Cybersecurity Enthusiast | Polyglot | Independent Learner</p>
+            <p data-i18n="home_desc">Seorang pembelajar mandiri dengan passion yang besar di bidang Cybersecurity dan pengembangan aplikasi. Saya memiliki kemampuan linguistik yang beragam—menguasai bahasa Rusia, Spanyol, dan Turki—yang melatih saya untuk berpikir analitis, teliti, dan beradaptasi dengan cepat.</p>
+            
+            <div class="btn-group">
+                <a href="#portfolio" class="btn btn-primary" data-i18n="btn_projects">View Projects</a>
+                <a href="#contact" class="btn btn-secondary" data-i18n="btn_contact">Contact Me</a>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://www.tiktok.com/@xiao_bi_?_r=1&_t=ZS-9A1m0faOOQ8" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/xiaobi_03?stkn=MzNja3JvN3NuMTVl" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:anakbahasainternational@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+        
+        <div class="profile-container">
+            <div class="profile-wrapper" id="profileWrapper">
+                <img src="fotoformal.jpg" alt="Labiib Formal" class="profile-img formal" id="formalPhoto">
+                <img src="foto.hacker.jpg" alt="Labiib Hacker" class="profile-img hacker" id="hackerPhoto">
+                <div class="profile-hint" data-i18n="profile_hint">Tap/Click to Reveal</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title" data-i18n="about_title">About Me</h2>
+        
+        <div class="about-grid">
+            <div class="about-card">
+                <h3><i class="fas fa-graduation-cap"></i> <span data-i18n="about_org_title">Organizations & Experience</span></h3>
+                <ul>
+                    <li>Paskibra SMPN 1 Balongan</li>
+                    <li>Paskibra Bandung Barat</li>
+                    <li>Paskibra Tingkat Kecamatan Lohbener</li>
+                    <li>PMR (Palang Merah Remaja)</li>
+                    <li>Pramuka</li>
+                    <li>Russian Language Class</li>
+                    <li>Spanish Language Class</li>
+                </ul>
+            </div>
+            
+            <div class="about-card">
+                <h3><i class="fas fa-laptop-code"></i> <span data-i18n="about_skills_title">Skills & Expertise</span></h3>
+                <ul>
+                    <li data-i18n="skill_1">Cybersecurity Fundamentals</li>
+                    <li data-i18n="skill_2">Web & Mobile Development</li>
+                    <li data-i18n="skill_3">AI Integration & Development</li>
+                    <li data-i18n="skill_4">Language Learning (Russian, Spanish, Turkish)</li>
+                    <li data-i18n="skill_5">Linux & Terminal Operations</li>
+                    <li data-i18n="skill_6">Application Development</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" data-target="9">0</div>
+                <div class="stat-label" data-i18n="stat_projects">Projects Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="7">0</div>
+                <div class="stat-label" data-i18n="stat_orgs">Organizations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" data-target="3">0</div>
+                <div class="stat-label" data-i18n="stat_langs">Languages Mastered</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio">
+        <h2 class="section-title" data-i18n="portfolio_title">Portfolio</h2>
+        
+        <div class="portfolio-tabs">
+            <button class="tab-btn active" onclick="showTab('projects', this)" data-i18n="tab_projects">Projects</button>
+            <button class="tab-btn" onclick="showTab('certificates', this)" data-i18n="tab_certs">Certificates</button>
+            <button class="tab-btn" onclick="showTab('techstack', this)" data-i18n="tab_tech">Tech Stack</button>
+        </div>
+        
+        <div id="projects" class="portfolio-content active">
+            <div class="projects-grid">
+                <div class="project-card"><div class="project-icon"><i class="fas fa-robot"></i></div><div class="project-info"><h3>LABIIB AI (GHOF AI)</h3><p data-i18n="proj_ai">Asisten pribadi berbasis Artificial Intelligence untuk membantu produktivitas dan automasi tugas sehari-hari.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-shield-alt"></i></div><div class="project-info"><h3>Cybersecurity Scripts</h3><p data-i18n="proj_cyber">Kumpulan script dan tools otomasi untuk analisis keamanan siber dan penetration testing.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-language"></i></div><div class="project-info"><h3>Uchi Russkiy</h3><p data-i18n="proj_rus">Aplikasi interaktif untuk belajar Bahasa Rusia dengan metode yang mudah dan menyenangkan.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-dragon"></i></div><div class="project-info"><h3>LabiibChine</h3><p data-i18n="proj_chi">Platform pembelajaran Bahasa Mandarin yang mudah dipahami untuk pemula hingga menengah.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-torii-gate"></i></div><div class="project-info"><h3>Kotoba N5</h3><p data-i18n="proj_jp1">Aplikasi hafalan kosakata Bahasa Jepang level dasar (N5) dengan metode interaktif.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-book-open"></i></div><div class="project-info"><h3>Hiragana</h3><p data-i18n="proj_jp2">Aplikasi khusus belajar menulis dan membaca huruf Hiragana dengan latihan interaktif.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-quran"></i></div><div class="project-info"><h3>NgajiKu</h3><p data-i18n="proj_ngaji">Aplikasi digital untuk membantu belajar mengaji dan Al-Qur'an dengan fitur lengkap.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-tasks"></i></div><div class="project-info"><h3>LABIIB Study Planner</h3><p data-i18n="proj_study">Aplikasi To-Do List dan perencana studi untuk manajemen waktu belajar yang efektif.</p></div></div>
+                <div class="project-card"><div class="project-icon"><i class="fas fa-users"></i></div><div class="project-info"><h3>LABIIB Parent</h3><p data-i18n="proj_parent">Aplikasi pendukung edukasi dan parenting untuk membantu orang tua dalam mendidik anak.</p></div></div>
+            </div>
+        </div>
+        
+        <div id="certificates" class="portfolio-content">
+            <div class="certificates-grid">
+                <div class="certificate-card" onclick="openLightbox('cert2.jpg')">
+                    <img src="cert2.jpg" alt="Russian Language Certificate" class="certificate-img">
+                    <div class="certificate-info">
+                        <h3><i class="fas fa-certificate"></i> <span data-i18n="cert1_title">Russian Language Proficiency (CEFR B1/B2)</span></h3>
+                        <p data-i18n="cert1_desc">Sertifikasi kemampuan bahasa Rusia tingkat menengah/mahir berdasarkan standar CEFR.</p>
+                        <span class="year"><i class="fas fa-calendar"></i> 2024</span>
+                    </div>
+                </div>
+                <div class="certificate-card" onclick="openLightbox('cert1.jpg')">
+                    <img src="cert1.jpg" alt="BahasaKita Certificate" class="certificate-img">
+                    <div class="certificate-info">
+                        <h3><i class="fas fa-certificate"></i> <span data-i18n="cert2_title">BahasaKita.id Digital Language Certificate</span></h3>
+                        <p data-i18n="cert2_desc">Sertifikat peserta resmi untuk Webinar "Belajar Bahasa di Era Digital".</p>
+                        <span class="year"><i class="fas fa-calendar"></i> October 21, 2021</span>
+                    </div>
+                </div>
+                <div class="certificate-card" onclick="openLightbox('cert3.jpg')">
+                    <img src="cert3.jpg" alt="PORSIMAPTAR Certificate" class="certificate-img">
+                    <div class="certificate-info">
+                        <h3><i class="fas fa-certificate"></i> <span data-i18n="cert3_title">PORSIMAPTAR XXI "Eye of Universe"</span></h3>
+                        <p data-i18n="cert3_desc">Sertifikat peserta resmi untuk webinar astronomi dan sains nasional.</p>
+                        <span class="year"><i class="fas fa-calendar"></i> October 19-21, 2021</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="techstack" class="portfolio-content">
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h4><i class="fas fa-tools"></i> <span data-i18n="tech_dev_title">Development Tools</span></h4>
+                    <div class="tech-list">
+                        <span class="tech-item">GitHub</span><span class="tech-item">Netlify</span><span class="tech-item">Vercel</span><span class="tech-item">Termux</span>
+                    </div>
+                </div>
+                <div class="tech-category">
+                    <h4><i class="fas fa-brain"></i> <span data-i18n="tech_ai_title">AI & LLM Tools</span></h4>
+                    <div class="tech-list">
+                        <span class="tech-item">Gemini AI</span><span class="tech-item">ChatGPT</span><span class="tech-item">DeepSeek</span><span class="tech-item">LMArena AI</span><span class="tech-item">Qwen</span><span class="tech-item">Ollama</span><span class="tech-item">Hugging Face</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title" data-i18n="contact_title">Hubungi Saya</h2>
+        
+        <div class="contact-container">
+            <form class="contact-form" onsubmit="event.preventDefault(); alert(translations[currentLang].alert_sent);">
+                <input type="text" data-i18n-placeholder="form_name" placeholder="Nama Anda" required>
+                <input type="email" data-i18n-placeholder="form_email" placeholder="Email Anda" required>
+                <textarea data-i18n-placeholder="form_msg" placeholder="Pesan Anda..." required></textarea>
+                <button type="submit" class="btn btn-primary" style="width: 100%; border: none;">
+                    <i class="fas fa-paper-plane"></i> <span data-i18n="form_submit">Kirim Pesan</span>
+                </button>
+            </form>
+            
+            <div class="find-me">
+                <h3 data-i18n="findme_title">Find Me</h3>
+                <div class="social-links">
+                    <a href="https://www.tiktok.com/@xiao_bi_?_r=1&_t=ZS-9A1m0faOOQ8" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/xiaobi_03?stkn=MzNja3JvN3NuMTVl" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="mailto:anakbahasainternational@gmail.com"><i class="fas fa-envelope"></i></a>
+                </div>
+                <p class="email-text"><i class="fas fa-envelope"></i> anakbahasainternational@gmail.com</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 LABIIB AL GHOFFUUR. <span data-i18n="footer_rights">All rights reserved.</span> | Built with <i class="fas fa-heart" style="color: var(--primary-blue);"></i> and passion</p>
+    </footer>
+
+    <!-- Lightbox for Certificate Images -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()">×</div>
+        <img src="" alt="Certificate" id="lightboxImg">
+    </div>
+
+    <script>
+        // TRANSLATIONS
+        const translations = {
+            id: {
+                loading: "MEMULAIKAN SISTEM...",
+                nav_home: "Beranda", nav_about: "Tentang", nav_portfolio: "Portofolio", nav_contact: "Kontak",
+                home_title: "Hai, Saya<br>LABIIB AL<br>GHOFFUUR",
+                home_tagline: "Membangun Generasi Bangsa yang Berdaya Melalui Teknologi & Keamanan Siber",
+                home_role: "Antusias Keamanan Siber | Poliglot | Pembelajar Mandiri",
+                home_desc: "Seorang pembelajar mandiri dengan passion yang besar di bidang Cybersecurity dan pengembangan aplikasi. Saya memiliki kemampuan linguistik yang beragam—menguasai bahasa Rusia, Spanyol, dan Turki—yang melatih saya untuk berpikir analitis, teliti, dan beradaptasi dengan cepat.",
+                btn_projects: "Lihat Proyek", btn_contact: "Hubungi Saya",
+                profile_hint: "Ketuk untuk Mengungkap",
+                about_title: "Tentang Saya",
+                about_org_title: "Organisasi & Pengalaman",
+                about_skills_title: "Keahlian & Keterampilan",
+                skill_1: "Fundamental Keamanan Siber", skill_2: "Pengembangan Web & Mobile",
+                skill_3: "Integrasi & Pengembangan AI", skill_4: "Pembelajaran Bahasa (Rusia, Spanyol, Turki)",
+                skill_5: "Operasi Linux & Terminal", skill_6: "Pengembangan Aplikasi",
+                stat_projects: "Proyek Selesai", stat_orgs: "Organisasi", stat_langs: "Bahasa Dikuasai",
+                portfolio_title: "Portofolio", tab_projects: "Proyek", tab_certs: "Sertifikat", tab_tech: "Tech Stack",
+                proj_ai: "Asisten pribadi berbasis AI untuk membantu produktivitas dan automasi tugas sehari-hari.",
+                proj_cyber: "Kumpulan script dan tools otomasi untuk analisis keamanan siber.",
+                proj_rus: "Aplikasi interaktif untuk belajar Bahasa Rusia.",
+                proj_chi: "Platform pembelajaran Bahasa Mandarin untuk pemula hingga menengah.",
+                proj_jp1: "Aplikasi hafalan kosakata Bahasa Jepang level N5.",
+                proj_jp2: "Aplikasi belajar menulis dan membaca huruf Hiragana.",
+                proj_ngaji: "Aplikasi digital untuk belajar mengaji dan Al-Qur'an.",
+                proj_study: "Aplikasi To-Do List dan perencana studi.",
+                proj_parent: "Aplikasi pendukung edukasi dan parenting.",
+                cert1_title: "Kemampuan Bahasa Rusia (CEFR B1/B2)",
+                cert1_desc: "Sertifikasi kemampuan bahasa Rusia tingkat menengah/mahir berdasarkan standar CEFR.",
+                cert2_title: "Sertifikat Bahasa Digital BahasaKita.id",
+                cert2_desc: "Sertifikat peserta resmi untuk Webinar \"Belajar Bahasa di Era Digital\".",
+                cert3_title: "PORSIMAPTAR XXI \"Eye of Universe\"",
+                cert3_desc: "Sertifikat peserta webinar astronomi dan sains nasional.",
+                tech_dev_title: "Alat Pengembangan", tech_ai_title: "Alat AI & LLM",
+                contact_title: "Hubungi Saya", form_name: "Nama Anda", form_email: "Email Anda",
+                form_msg: "Pesan Anda...", form_submit: "Kirim Pesan", findme_title: "Temukan Saya",
+                footer_rights: "Hak cipta dilindungi.", alert_sent: "Terima kasih! Pesan terkirim."
+            },
+            en: {
+                loading: "INITIALIZING SYSTEM...",
+                nav_home: "Home", nav_about: "About", nav_portfolio: "Portfolio", nav_contact: "Contact",
+                home_title: "Hi, I'm<br>LABIIB AL<br>GHOFFUUR",
+                home_tagline: "Empowering the Nation's Future Through Technology & Cybersecurity",
+                home_role: "Cybersecurity Enthusiast | Polyglot | Independent Learner",
+                home_desc: "A self-directed learner with a deep passion for Cybersecurity and application development. I possess diverse linguistic abilities—fluent in Russian, Spanish, and Turkish—which train me to think analytically, precisely, and adapt quickly.",
+                btn_projects: "View Projects", btn_contact: "Contact Me",
+                profile_hint: "Tap/Click to Reveal",
+                about_title: "About Me",
+                about_org_title: "Organizations & Experience",
+                about_skills_title: "Skills & Expertise",
+                skill_1: "Cybersecurity Fundamentals", skill_2: "Web & Mobile Development",
+                skill_3: "AI Integration & Development", skill_4: "Language Learning (Russian, Spanish, Turkish)",
+                skill_5: "Linux & Terminal Operations", skill_6: "Application Development",
+                stat_projects: "Projects Completed", stat_orgs: "Organizations", stat_langs: "Languages Mastered",
+                portfolio_title: "Portfolio", tab_projects: "Projects", tab_certs: "Certificates", tab_tech: "Tech Stack",
+                proj_ai: "AI-powered personal assistant to boost productivity and automate daily tasks.",
+                proj_cyber: "Collection of scripts and automation tools for cybersecurity analysis.",
+                proj_rus: "Interactive app for learning Russian language.",
+                proj_chi: "Easy-to-understand Mandarin learning platform.",
+                proj_jp1: "Japanese vocabulary memorization app (N5 level).",
+                proj_jp2: "Specialized app for learning Hiragana characters.",
+                proj_ngaji: "Digital app to help learn Quran recitation.",
+                proj_study: "To-Do List and study planner app.",
+                proj_parent: "Educational and parenting support app.",
+                cert1_title: "Russian Language Proficiency (CEFR B1/B2)",
+                cert1_desc: "Certified intermediate/advanced proficiency in Russian based on CEFR standards.",
+                cert2_title: "BahasaKita.id Digital Language Certificate",
+                cert2_desc: "Official participant certificate for \"Learning Languages in the Digital Era\" Webinar.",
+                cert3_title: "PORSIMAPTAR XXI \"Eye of Universe\"",
+                cert3_desc: "Official participant certificate for national astronomy and science webinar.",
+                tech_dev_title: "Development Tools", tech_ai_title: "AI & LLM Tools",
+                contact_title: "Contact Me", form_name: "Your Name", form_email: "Your Email",
+                form_msg: "Your Message...", form_submit: "Send Message", findme_title: "Find Me",
+                footer_rights: "All rights reserved.", alert_sent: "Thank you! Message sent."
+            }
+        };
+
+        let currentLang = localStorage.getItem('preferredLang') || 'id';
+        let currentTheme = localStorage.getItem('preferredTheme') || 'dark';
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('preferredLang', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerHTML = translations[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
+            });
+            document.getElementById('langToggle').textContent = lang === 'id' ? '🌐 EN' : '🌐 ID';
+            document.documentElement.lang = lang;
+        }
+
+        function applyTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('preferredTheme', theme);
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeToggle').textContent = '☀️';
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('themeToggle').textContent = '🌙';
+            }
+        }
+
+        document.getElementById('langToggle').addEventListener('click', () => {
+            applyLanguage(currentLang === 'id' ? 'en' : 'id');
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        // Lightbox functions
+        function openLightbox(imgSrc) {
+            document.getElementById('lightboxImg').src = imgSrc;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('lightbox')) closeLightbox();
+        });
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            applyLanguage(currentLang);
+            applyTheme(currentTheme);
+            
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingProgress = document.getElementById('loadingProgress');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => { loadingScreen.classList.add('hidden'); }, 600);
+                }
+                loadingProgress.style.width = progress + '%';
+            }, 150);
+        });
+
+        // Stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                const size = Math.random() * 2 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Active Nav
+        window.addEventListener('scroll', () => {
+            let current = '';
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) current = section.getAttribute('id');
+            });
+            document.querySelectorAll('.nav-container nav a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) link.classList.add('active');
+            });
+        });
+
+        // Tabs
+        function showTab(tabName, btnElement) {
+            document.querySelectorAll('.portfolio-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // Counters
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.animated) {
+                    entry.target.dataset.animated = 'true';
+                    const target = parseInt(entry.target.getAttribute('data-target'));
+                    let current = 0;
+                    const duration = 1500;
+                    const stepTime = duration / target;
+                    const timer = setInterval(() => {
+                        current++;
+                        entry.target.textContent = current;
+                        if (current >= target) clearInterval(timer);
+                    }, stepTime);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.stat-number').forEach(stat => counterObserver.observe(stat));
+
+        // Profile Click
+        document.getElementById('profileWrapper').addEventListener('click', function() {
+            this.classList.toggle('revealed');
+        });
+    </script>
+</body>
+</html>
