@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="description" content="Labiib Al Ghoffuur - Cybersecurity Enthusiast & Polyglot">
+<title>Labiib Al Ghoffuur — Cybersecurity & Polyglot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#070a12;
+  --bg-2:#0c1120;
+  --surface:rgba(16,22,40,.72);
+  --surface-solid:#101628;
+  --line:rgba(120,150,220,.14);
+  --line-strong:rgba(120,150,220,.28);
+  --ink:#eaf0ff;
+  --ink-dim:#8b98b8;
+  --ink-mute:#5d6784;
+  --accent:#4d8dff;
+  --accent-2:#22d3ee;
+  --accent-3:#a78bfa;
+  --glow:rgba(77,141,255,.35);
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 20px 60px -20px rgba(0,0,0,.7);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+body.light{
+  --bg:#f5f7fc;
+  --bg-2:#eaeef8;
+  --surface:rgba(255,255,255,.78);
+  --surface-solid:#ffffff;
+  --line:rgba(30,60,140,.1);
+  --line-strong:rgba(30,60,140,.22);
+  --ink:#0a1428;
+  --ink-dim:#4a5878;
+  --ink-mute:#8590ab;
+  --accent:#2563eb;
+  --accent-2:#0891b2;
+  --accent-3:#7c3aed;
+  --glow:rgba(37,99,235,.22);
+  --shadow:0 20px 60px -20px rgba(30,60,140,.25);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow-x:hidden;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  transition:background .5s var(--ease),color .5s var(--ease);
+  position:relative;
+  min-height:100vh;
+}
+/* ambient background */
+.bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-canvas::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(77,141,255,.14), transparent 60%),
+    radial-gradient(900px 500px at 0% 100%, rgba(34,211,238,.10), transparent 60%),
+    radial-gradient(700px 400px at 50% 50%, rgba(167,139,250,.06), transparent 60%);
+  transition:opacity .5s;
+}
+body.light .bg-canvas::before{opacity:.5}
+.grid-overlay{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 75%);
+  opacity:.55;
+}
+.noise{
+  position:absolute;inset:0;opacity:.035;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============ PRELOADER ============ */
+#preloader{
+  position:fixed;inset:0;z-index:9999;
+  background:#05070d;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:22px;
+  transition:opacity .7s var(--ease),visibility .7s;
+}
+#preloader.done{opacity:0;visibility:hidden}
+.pre-logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:clamp(1rem,3.5vw,1.4rem);
+  font-weight:700;
+  color:#eaf0ff;
+  letter-spacing:.18em;
+  display:flex;align-items:center;gap:2px;
+}
+.pre-logo .cursor{
+  display:inline-block;width:9px;height:1.15em;background:var(--accent-2);
+  animation:blink 1s steps(2) infinite;margin-left:2px;
+}
+@keyframes blink{50%{opacity:0}}
+.pre-bar{
+  width:min(260px,70vw);height:2px;background:rgba(255,255,255,.08);
+  border-radius:2px;overflow:hidden;
+}
+.pre-bar span{
+  display:block;height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  transition:width .25s var(--ease);
+}
+.pre-status{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;color:#5d6784;letter-spacing:.15em;
+}
+
+/* ============ NAV ============ */
+.nav{
+  position:fixed;z-index:1000;
+  top:18px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:6px;
+  padding:8px 10px;
+  background:var(--surface);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid var(--line);
+  border-radius:100px;
+  box-shadow:var(--shadow);
+  max-width:calc(100vw - 24px);
+  transition:background .5s,border-color .5s;
+}
+.brand{
+  display:flex;align-items:center;gap:8px;
+  padding:0 12px 0 6px;
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:.82rem;
+  color:var(--ink);
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
+.brand-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--accent-2);
+  box-shadow:0 0 10px var(--accent-2);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.85)}}
+.nav-links{display:flex;gap:2px;align-items:center}
+.nav-links a{
+  color:var(--ink-dim);text-decoration:none;
+  font-size:.82rem;font-weight:500;
+  padding:8px 14px;border-radius:100px;
+  transition:all .3s var(--ease);
+  white-space:nowrap;
+}
+.nav-links a:hover{color:var(--ink);background:rgba(77,141,255,.1)}
+.nav-links a.active{color:var(--ink);background:rgba(77,141,255,.16)}
+.nav-actions{display:flex;gap:6px;align-items:center;padding-left:6px;border-left:1px solid var(--line)}
+.icon-btn{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--line);
+  background:transparent;color:var(--ink-dim);
+  cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s var(--ease);
+  flex-shrink:0;
+}
+.icon-btn:hover{color:var(--ink);border-color:var(--line-strong);background:rgba(77,141,255,.08)}
+.lang-btn{
+  width:auto;padding:0 12px;border-radius:100px;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.05em;
+}
+.nav-toggle{display:none}
+
+/* ============ LAYOUT ============ */
+.section{
+  position:relative;z-index:1;
+  max-width:1240px;margin:0 auto;
+  padding:120px 24px;
+}
+.section-head{margin-bottom:56px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent-2);
+  margin-bottom:14px;
+}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--accent-2);opacity:.6}
+.section-head h2{
+  font-size:clamp(1.9rem,4.6vw,3rem);
+  font-weight:700;line-height:1.1;
+  letter-spacing:-.02em;
+  max-width:720px;
+}
+.section-head h2 em{
+  font-style:normal;
+  background:linear-gradient(120deg,var(--accent),var(--accent-2) 55%,var(--accent-3));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.section-head p{color:var(--ink-dim);margin-top:14px;max-width:600px;font-size:.98rem}
+
+/* ============ HERO ============ */
+#home{
+  min-height:100vh;
+  display:grid;grid-template-columns:1.15fr .85fr;
+  gap:60px;align-items:center;
+  padding-top:150px;padding-bottom:80px;
+}
+.hero-status{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:7px 14px 7px 10px;
+  border:1px solid var(--line);
+  background:var(--surface);
+  backdrop-filter:blur(10px);
+  border-radius:100px;
+  font-size:.75rem;color:var(--ink-dim);
+  margin-bottom:26px;
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.02em;
+}
+.hero-status .dot{
+  width:7px;height:7px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 10px #22c55e;
+  animation:pulse 2s infinite;
+}
+.hero-status b{color:var(--ink);font-weight:600}
+.hero h1{
+  font-size:clamp(2.4rem,6vw,4.4rem);
+  font-weight:700;line-height:1.02;
+  letter-spacing:-.035em;
+  margin-bottom:22px;
+}
+.hero h1 .line{display:block}
+.hero h1 .grad{
+  background:linear-gradient(120deg,var(--accent) 0%,var(--accent-2) 50%,var(--accent-3) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-size:200% 200%;
+  animation:gradShift 8s ease infinite;
+}
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-lede{
+  font-size:1.02rem;color:var(--ink-dim);
+  max-width:520px;margin-bottom:30px;line-height:1.75;
+}
+.hero-lede strong{color:var(--ink);font-weight:600}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:13px 24px;border-radius:100px;
+  font-size:.9rem;font-weight:600;
+  font-family:inherit;
+  text-decoration:none;cursor:pointer;border:none;
+  transition:all .35s var(--ease);
+  position:relative;overflow:hidden;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#fff;
+  box-shadow:0 10px 30px -10px var(--glow);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 40px -12px var(--glow)}
+.btn-primary i{transition:transform .35s var(--ease)}
+.btn-primary:hover i{transform:translateX(3px)}
+.btn-ghost{
+  background:transparent;color:var(--ink);
+  border:1px solid var(--line-strong);
+}
+.btn-ghost:hover{background:rgba(77,141,255,.08);border-color:var(--accent);transform:translateY(-3px)}
+.hero-socials{display:flex;gap:10px}
+.hero-socials a{
+  width:40px;height:40px;border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--surface);
+  color:var(--ink-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;text-decoration:none;
+  transition:all .3s var(--ease);
+  backdrop-filter:blur(8px);
+}
+.hero-socials a:hover{
+  color:var(--ink);border-color:var(--accent);
+  transform:translateY(-3px);
+  box-shadow:0 10px 24px -10px var(--glow);
+}
+
+/* hero visual */
+.hero-visual{display:flex;justify-content:center;align-items:center;perspective:1400px}
+.photo-stack{
+  position:relative;width:min(340px,80vw);aspect-ratio:4/5;
+  border-radius:22px;
+  cursor:pointer;
+  transform-style:preserve-3d;
+  transition:transform .8s var(--ease);
+}
+.photo-stack:hover{transform:rotateY(-6deg) rotateX(3deg)}
+.photo-frame{
+  position:absolute;inset:0;
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid var(--line-strong);
+  box-shadow:0 30px 70px -25px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.03) inset;
+  background:var(--surface-solid);
+}
+.photo-frame img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;
+  transition:opacity .6s var(--ease),transform .6s var(--ease),filter .6s;
+}
+.photo-frame.formal img{opacity:1;filter:saturate(1) contrast(1.02)}
+.photo-frame.hacker img{opacity:0;filter:saturate(1.15) contrast(1.1)}
+.photo-stack.revealed .formal img,
+.photo-stack:hover .formal img{opacity:0;transform:scale(1.04)}
+.photo-stack.revealed .hacker img,
+.photo-stack:hover .hacker img{opacity:1;animation:glitch .5s steps(3)}
+@keyframes glitch{
+  0%{transform:translate(0);filter:hue-rotate(0)}
+  30%{transform:translate(-4px,3px);filter:hue-rotate(120deg)}
+  60%{transform:translate(4px,-3px);filter:hue-rotate(240deg)}
+  100%{transform:translate(0);filter:hue-rotate(0)}
+}
+.photo-badge{
+  position:absolute;z-index:5;
+  padding:8px 14px;border-radius:100px;
+  background:var(--surface-solid);
+  border:1px solid var(--line-strong);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;font-weight:600;
+  letter-spacing:.05em;
+  display:flex;align-items:center;gap:7px;
+  box-shadow:0 10px 24px -10px rgba(0,0,0,.5);
+}
+.photo-badge i{color:var(--accent-2)}
+.photo-badge.tl{top:-14px;left:-14px}
+.photo-badge.br{bottom:-14px;right:-14px;color:var(--ink-dim)}
+.photo-badge.br i{color:#22c55e}
+.photo-hint{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%) translateY(8px);
+  padding:7px 14px;border-radius:100px;
+  background:rgba(5,7,13,.8);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--line-strong);
+  color:#fff;font-size:.72rem;
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+  opacity:0;transition:all .4s var(--ease);
+  z-index:6;pointer-events:none;white-space:nowrap;
+}
+.photo-stack:hover .photo-hint{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ============ MARQUEE ============ */
+.marquee{
+  position:relative;z-index:1;
+  padding:22px 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+  background:var(--surface);
+  backdrop-filter:blur(8px);
+}
+.marquee-track{
+  display:flex;gap:44px;white-space:nowrap;
+  animation:scroll 32s linear infinite;
+  width:max-content;
+}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.marquee-track span{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;color:var(--ink-mute);
+  display:inline-flex;align-items:center;gap:14px;
+  letter-spacing:.02em;
+}
+.marquee-track span::after{content:'◆';color:var(--accent);font-size:.55rem;opacity:.5}
+.marquee-track span i{color:var(--accent-2);font-style:normal}
+
+/* ============ ABOUT ============ */
+.about-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:20px;
+  margin-bottom:20px;
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px;
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  transition:all .4s var(--ease);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  padding:1px;
+  background:linear-gradient(135deg,rgba(77,141,255,.4),transparent 40%,transparent 60%,rgba(34,211,238,.3));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .4s;
+  pointer-events:none;
+}
+.card:hover::before{opacity:1}
+.card:hover{border-color:var(--line-strong);transform:translateY(-3px)}
+.card-head{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:20px;
+}
+.card-head .ico{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(77,141,255,.18),rgba(34,211,238,.12));
+  border:1px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent-2);font-size:.95rem;
+  flex-shrink:0;
+}
+.card-head h3{font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
+.card-head small{display:block;color:var(--ink-mute);font-size:.72rem;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;margin-top:2px}
+
+.org-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.org-list li{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:var(--radius-sm);
+  font-size:.88rem;color:var(--ink-dim);
+  transition:all .3s var(--ease);
+}
+.org-list li:hover{background:rgba(77,141,255,.06);color:var(--ink);transform:translateX(4px)}
+.org-list li i{
+  width:22px;height:22px;border-radius:6px;
+  background:rgba(77,141,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;color:var(--accent);
+  flex-shrink:0;
+}
+.org-list li b{color:var(--ink);font-weight:600}
+.org-list li span{font-size:.75rem;color:var(--ink-mute);margin-left:auto;font-family:'JetBrains Mono',monospace}
+
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px}
+.skill-tag{
+  padding:8px 14px;border-radius:100px;
+  background:rgba(77,141,255,.07);
+  border:1px solid var(--line);
+  font-size:.8rem;color:var(--ink-dim);
+  transition:all .3s var(--ease);
+  cursor:default;
+}
+.skill-tag:hover{
+  background:rgba(77,141,255,.16);
+  color:var(--ink);
+  border-color:var(--accent);
+  transform:translateY(-2px);
+}
+.skill-tag i{color:var(--accent-2);margin-right:6px;font-size:.75rem}
+
+/* stats */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+}
+.stat{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px 20px;
+  text-align:left;
+  transition:all .4s var(--ease);
+  backdrop-filter:blur(14px);
+}
+.stat:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 20px 40px -20px var(--glow)}
+.stat-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:clamp(1.8rem,3.5vw,2.4rem);
+  font-weight:700;
+  background:linear-gradient(120deg,var(--accent),var(--accent-2));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  line-height:1;
+  margin-bottom:8px;
+}
+.stat-lbl{font-size:.78rem;color:var(--ink-mute);letter-spacing:.02em}
+.stat-lbl i{color:var(--accent);margin-right:5px;font-size:.7rem}
+
+/* ============ PORTFOLIO ============ */
+.tabs{
+  display:flex;gap:8px;margin-bottom:32px;
+  padding:6px;border-radius:100px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  backdrop-filter:blur(14px);
+  width:max-content;max-width:100%;
+  overflow-x:auto;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  padding:10px 20px;border-radius:100px;
+  border:none;background:transparent;
+  color:var(--ink-dim);font-family:inherit;
+  font-size:.85rem;font-weight:600;
+  cursor:pointer;transition:all .3s var(--ease);
+  white-space:nowrap;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.tab:hover{color:var(--ink)}
+.tab.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#fff;
+  box-shadow:0 8px 20px -8px var(--glow);
+}
+.tab i{font-size:.78rem}
+.panel{display:none}
+.panel.active{display:block;animation:panelIn .5s var(--ease)}
+@keyframes panelIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.proj{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px;
+  transition:all .4s var(--ease);
+  backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+.proj::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:0;transition:opacity .4s;
+}
+.proj:hover::after{opacity:1}
+.proj:hover{
+  transform:translateY(-5px);
+  border-color:var(--line-strong);
+  box-shadow:0 24px 50px -25px var(--glow);
+}
+.proj-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.proj-ico{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(77,141,255,.16),rgba(34,211,238,.1));
+  border:1px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;color:var(--accent-2);
+  transition:all .4s var(--ease);
+}
+.proj:hover .proj-ico{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#fff;border-color:transparent;
+  transform:rotate(-6deg) scale(1.05);
+  box-shadow:0 10px 24px -10px var(--glow);
+}
+.proj-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;color:var(--ink-mute);
+  letter-spacing:.06em;
+}
+.proj h3{font-size:1rem;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.proj p{font-size:.85rem;color:var(--ink-dim);line-height:1.6;flex:1}
+.proj-meta{
+  margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line);
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;padding:4px 9px;border-radius:6px;
+  background:rgba(77,141,255,.08);
+  color:var(--accent);
+  letter-spacing:.03em;
+}
+body.light .chip{background:rgba(37,99,235,.08);color:var(--accent)}
+
+/* certificates */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.cert{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  cursor:pointer;
+  transition:all .4s var(--ease);
+  backdrop-filter:blur(12px);
+}
+.cert:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 24px 50px -25px var(--glow)}
+.cert-img{
+  position:relative;aspect-ratio:16/10;overflow:hidden;
+  background:var(--bg-2);
+  border-bottom:1px solid var(--line);
+}
+.cert-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease);display:block}
+.cert:hover .cert-img img{transform:scale(1.06)}
+.cert-img::after{
+  content:'\f00e';font-family:'Font Awesome 6 Free';font-weight:900;
+  position:absolute;top:12px;right:12px;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(5,7,13,.7);backdrop-filter:blur(6px);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;opacity:0;transform:scale(.7);
+  transition:all .4s var(--ease);
+}
+.cert:hover .cert-img::after{opacity:1;transform:scale(1)}
+.cert-body{padding:20px}
+.cert-body h3{font-size:.95rem;font-weight:600;margin-bottom:8px;line-height:1.35}
+.cert-body p{font-size:.82rem;color:var(--ink-dim);line-height:1.55}
+.cert-date{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:12px;font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;color:var(--accent-2);
+  letter-spacing:.03em;
+}
+
+/* tech stack */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.tech-cat{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px;
+  backdrop-filter:blur(12px);
+  transition:all .4s var(--ease);
+}
+.tech-cat:hover{border-color:var(--line-strong);transform:translateY(-4px)}
+.tech-cat h4{
+  font-size:.92rem;font-weight:600;margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+}
+.tech-cat h4 i{
+  width:32px;height:32px;border-radius:9px;
+  background:linear-gradient(135deg,rgba(77,141,255,.16),rgba(34,211,238,.1));
+  border:1px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent-2);font-size:.8rem;
+}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px}
+.tech-pill{
+  padding:8px 14px;border-radius:100px;
+  background:rgba(77,141,255,.06);
+  border:1px solid var(--line);
+  font-size:.78rem;color:var(--ink-dim);
+  display:inline-flex;align-items:center;gap:7px;
+  transition:all .3s var(--ease);
+}
+.tech-pill:hover{
+  background:rgba(77,141,255,.14);color:var(--ink);
+  border-color:var(--accent);transform:translateY(-2px);
+}
+.tech-pill i{font-size:.7rem;color:var(--accent-2)}
+
+/* ============ CONTACT ============ */
+.contact-wrap{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+.contact-form{display:flex;flex-direction:column;gap:12px}
+.field{position:relative}
+.field label{
+  position:absolute;top:14px;left:16px;
+  font-size:.85rem;color:var(--ink-mute);
+  pointer-events:none;
+  transition:all .25s var(--ease);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.02em;
+}
+.field input,.field textarea{
+  width:100%;padding:15px 16px;
+  background:var(--surface-solid);
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  color:var(--ink);font-family:inherit;
+  font-size:.92rem;outline:none;
+  transition:all .3s var(--ease);
+  resize:vertical;
+}
+.field textarea{min-height:130px}
+.field input:focus,.field textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(77,141,255,.12);
+}
+.field input:focus+label,.field input:not(:placeholder-shown)+label,
+.field textarea:focus+label,.field textarea:not(:placeholder-shown)+label{
+  top:-9px;left:12px;font-size:.68rem;
+  background:var(--surface-solid);padding:0 6px;
+  color:var(--accent);
+  border-radius:4px;
+}
+.field input::placeholder,.field textarea::placeholder{color:transparent}
+.contact-info{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px;
+  backdrop-filter:blur(14px);
+  display:flex;flex-direction:column;gap:20px;
+}
+.contact-info h3{font-size:1.05rem;font-weight:600}
+.contact-info p{font-size:.88rem;color:var(--ink-dim);line-height:1.7}
+.contact-item{
+  display:flex;align-items:center;gap:14px;
+  padding:14px;border-radius:var(--radius-sm);
+  background:rgba(77,141,255,.05);
+  border:1px solid var(--line);
+  text-decoration:none;color:var(--ink);
+  transition:all .3s var(--ease);
+}
+.contact-item:hover{border-color:var(--accent);transform:translateX(4px);background:rgba(77,141,255,.1)}
+.contact-item .ci{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:.9rem;flex-shrink:0;
+}
+.contact-item b{display:block;font-size:.85rem;font-weight:600}
+.contact-item span{font-size:.75rem;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+
+/* ============ FOOTER ============ */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--line);
+  padding:32px 24px;
+  text-align:center;
+  background:var(--surface);
+  backdrop-filter:blur(8px);
+}
+footer p{font-size:.82rem;color:var(--ink-mute);font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+footer p i{color:var(--accent);margin:0 4px;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+footer a{color:var(--accent-2);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* ============ LIGHTBOX ============ */
+.lightbox{
+  position:fixed;inset:0;z-index:9998;
+  background:rgba(3,5,10,.94);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  opacity:0;visibility:hidden;
+  transition:opacity .4s var(--ease),visibility .4s;
+}
+.lightbox.open{opacity:1;visibility:visible}
+.lightbox img{
+  max-width:min(92vw,1000px);max-height:85vh;
+  border-radius:14px;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06);
+  transform:scale(.94);transition:transform .4s var(--ease);
+  object-fit:contain;
+}
+.lightbox.open img{transform:scale(1)}
+.lightbox-close{
+  position:absolute;top:20px;right:20px;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;font-size:1.3rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s var(--ease);
+}
+.lightbox-close:hover{background:var(--accent);transform:rotate(90deg)}
+
+/* ============ REVEAL ============ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:translateY(0)}
+.reveal.d1{transition-delay:.08s}
+.reveal.d2{transition-delay:.16s}
+.reveal.d3{transition-delay:.24s}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:960px){
+  #home{grid-template-columns:1fr;gap:44px;padding-top:130px;text-align:center}
+  .hero-lede{margin-left:auto;margin-right:auto}
+  .hero-cta,.hero-socials,.hero-status{justify-content:center}
+  .hero-visual{order:-1}
+  .photo-stack{width:min(280px,72vw)}
+  .about-grid,.contact-wrap{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:720px){
+  .nav{top:auto;bottom:14px;left:14px;right:14px;transform:none;max-width:none;justify-content:space-between;border-radius:100px}
+  .brand span{display:none}
+  .brand{padding:0 4px}
+  .nav-links{order:2}
+  .nav-links a{padding:9px 11px;font-size:0}
+  .nav-links a i{font-size:1rem}
+  .nav-links a span{display:none}
+  .nav-actions{padding-left:4px}
+  .section{padding:90px 18px}
+  .section-head{margin-bottom:38px}
+  .stats-row{grid-template-columns:1fr 1fr;gap:10px}
+  .stat{padding:18px 16px}
+  .marquee{padding:16px 0}
+  .tabs{width:100%}
+  .tab{flex:1;justify-content:center;padding:10px 12px;font-size:.78rem}
+  .tab span{display:none}
+  .tab i{font-size:.9rem}
+  .proj{padding:20px}
+  .photo-badge{display:none}
+  footer{padding-bottom:90px}
+}
+@media (max-width:380px){
+  .stats-row{grid-template-columns:1fr}
+  .hero-cta{flex-direction:column}
+  .hero-cta .btn{width:100%;justify-content:center}
+}
+@media (hover:none){
+  .photo-stack:hover{transform:none}
+  .photo-stack.revealed{transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pre-logo">LABIIB<span class="cursor"></span></div>
+  <div class="pre-bar"><span id="preBar"></span></div>
+  <div class="pre-status" id="preStatus">booting system...</div>
+</div>
+
+<!-- BACKGROUND -->
+<div class="bg-canvas">
+  <div class="grid-overlay"></div>
+  <div class="noise"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="brand"><span class="brand-dot"></span><span>labiib.dev</span></div>
+  <div class="nav-links">
+    <a href="#home" class="active" data-i18n="nav_home"><i class="fas fa-house"></i> <span>Home</span></a>
+    <a href="#about" data-i18n="nav_about"><i class="fas fa-user"></i> <span>About</span></a>
+    <a href="#portfolio" data-i18n="nav_portfolio"><i class="fas fa-layer-group"></i> <span>Portfolio</span></a>
+    <a href="#contact" data-i18n="nav_contact"><i class="fas fa-paper-plane"></i> <span>Contact</span></a>
+  </div>
+  <div class="nav-actions">
+    <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+      <i class="fas fa-moon"></i>
+    </button>
+    <button class="icon-btn lang-btn" id="langBtn" title="Toggle language" aria-label="Toggle language">EN</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="section" id="home">
+  <div class="hero">
+    <div class="hero-status">
+      <span class="dot"></span>
+      <span data-i18n="hero_status">Open to collaboration &amp; learning</span>
+    </div>
+    <h1>
+      <span class="line" data-i18n="hero_hi">Hi, I'm</span>
+      <span class="line grad">Labiib Al<br>Ghoffuur</span>
+    </h1>
+    <p class="hero-lede" data-i18n="hero_lede">
+      A self-taught learner passionate about <strong>cybersecurity</strong> and <strong>application development</strong>. I speak Russian, Spanish, and Turkish — languages that sharpen my analytical thinking and adaptability.
+    </p>
+    <div class="hero-cta">
+      <a href="#portfolio" class="btn btn-primary">
+        <span data-i18n="btn_projects">View Projects</span> <i class="fas fa-arrow-right"></i>
+      </a>
+      <a href="#contact" class="btn btn-ghost">
+        <i class="fas fa-paper-plane"></i> <span data-i18n="btn_contact">Contact Me</span>
+      </a>
+    </div>
+    <div class="hero-socials">
+      <a href="https://www.tiktok.com/@xiao_bi_?_r=1&_t=ZS-9A1m0faOOQ8" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.instagram.com/xiaobi_03?stkn=MzNja3JvN3NuMTVl" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="mailto:anakbahasainternational@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="photo-stack" id="photoStack">
+      <span class="photo-badge tl"><i class="fas fa-shield-halved"></i> Cybersecurity</span>
+      <span class="photo-badge br"><i class="fas fa-circle"></i> Polyglot</span>
+      <div class="photo-frame formal"><img src="fotoformal.jpg" alt="Labiib Al Ghoffuur"></div>
+      <div class="photo-frame hacker"><img src="foto.hacker.jpg" alt="Labiib Al Ghoffuur - hacker mode"></div>
+      <span class="photo-hint" data-i18n="photo_hint">Tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marquee"></div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-head reveal">
+    <span class="eyebrow" data-i18n="about_eyebrow">About</span>
+    <h2 data-i18n="about_title">A quick <em>introduction</em></h2>
+    <p data-i18n="about_lede">Background, experience, and the tools I use to build things.</p>
+  </div>
+
+  <div class="about-grid">
+    <div class="card reveal">
+      <div class="card-head">
+        <div class="ico"><i class="fas fa-people-group"></i></div>
+        <div>
+          <h3 data-i18n="about_exp">Organizations &amp; Experience</h3>
+          <small data-i18n="about_exp_sub">leadership · discipline · teamwork</small>
+        </div>
+      </div>
+      <ul class="org-list">
+        <li><i class="fas fa-flag"></i> <b>Paskibra</b> <span>SMPN 1 Balongan</span></li>
+        <li><i class="fas fa-flag"></i> <b>Paskibra</b> <span>Bandung Barat</span></li>
+        <li><i class="fas fa-flag"></i> <b>Paskibra</b> <span>Kec. Lohbener</span></li>
+        <li><i class="fas fa-heart-pulse"></i> <b>PMR</b> <span>Palang Merah Remaja</span></li>
+        <li><i class="fas fa-campground"></i> <b>Pramuka</b> <span>Scout</span></li>
+        <li><i class="fas fa-language"></i> <b>Russian Class</b> <span>RU</span></li>
+        <li><i class="fas fa-language"></i> <b>Spanish Class</b> <span>ES</span></li>
+      </ul>
+    </div>
+
+    <div class="card reveal d1">
+      <div class="card-head">
+        <div class="ico"><i class="fas fa-terminal"></i></div>
+        <div>
+          <h3 data-i18n="about_skills">Skills &amp; Expertise</h3>
+          <small data-i18n="about_skills_sub">what I actually do</small>
+        </div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag"><i class="fas fa-shield-halved"></i><span data-i18n="s1">Cybersecurity Fundamentals</span></span>
+        <span class="skill-tag"><i class="fas fa-code"></i><span data-i18n="s2">Web &amp; Mobile Development</span></span>
+        <span class="skill-tag"><i class="fas fa-brain"></i><span data-i18n="s3">AI Integration</span></span>
+        <span class="skill-tag"><i class="fas fa-language"></i><span data-i18n="s4">RU · ES · TR</span></span>
+        <span class="skill-tag"><i class="fas fa-linux"></i><span data-i18n="s5">Linux &amp; Terminal</span></span>
+        <span class="skill-tag"><i class="fas fa-mobile-screen"></i><span data-i18n="s6">App Development</span></span>
+        <span class="skill-tag"><i class="fas fa-magnifying-glass-chart"></i><span data-i18n="s7">Analytical Thinking</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat reveal">
+      <div class="stat-num" data-target="9">0</div>
+      <div class="stat-lbl"><i class="fas fa-diagram-project"></i><span data-i18n="stat1">Projects</span></div>
+    </div>
+    <div class="stat reveal d1">
+      <div class="stat-num" data-target="7">0</div>
+      <div class="stat-lbl"><i class="fas fa-people-group"></i><span data-i18n="stat2">Organizations</span></div>
+    </div>
+    <div class="stat reveal d2">
+      <div class="stat-num" data-target="3">0</div>
+      <div class="stat-lbl"><i class="fas fa-language"></i><span data-i18n="stat3">Languages</span></div>
+    </div>
+    <div class="stat reveal d3">
+      <div class="stat-num" data-target="3">0</div>
+      <div class="stat-lbl"><i class="fas fa-certificate"></i><span data-i18n="stat4">Certificates</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="section" id="portfolio">
+  <div class="section-head reveal">
+    <span class="eyebrow" data-i18n="port_eyebrow">Portfolio</span>
+    <h2 data-i18n="port_title">Selected <em>work &amp; proofs</em></h2>
+    <p data-i18n="port_lede">Things I've built, learned, and earned.</p>
+  </div>
+
+  <div class="tabs reveal" role="tablist">
+    <button class="tab active" data-tab="projects" role="tab">
+      <i class="fas fa-diagram-project"></i> <span data-i18n="tab_projects">Projects</span>
+    </button>
+    <button class="tab" data-tab="certificates" role="tab">
+      <i class="fas fa-certificate"></i> <span data-i18n="tab_certs">Certificates</span>
+    </button>
+    <button class="tab" data-tab="tech" role="tab">
+      <i class="fas fa-toolbox"></i> <span data-i18n="tab_tech">Tech Stack</span>
+    </button>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="panel active" id="projects">
+    <div class="proj-grid">
+      <article class="proj reveal">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-robot"></i></div><span class="proj-num">01</span></div>
+        <h3>GHOF AI</h3>
+        <p data-i18n="p1">Personal AI assistant built to automate daily tasks and boost productivity.</p>
+        <div class="proj-meta"><span class="chip">AI</span><span class="chip">Automation</span></div>
+      </article>
+      <article class="proj reveal d1">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-shield-halved"></i></div><span class="proj-num">02</span></div>
+        <h3>Cybersecurity Scripts</h3>
+        <p data-i18n="p2">Collection of automation scripts and tools for security analysis.</p>
+        <div class="proj-meta"><span class="chip">Security</span><span class="chip">Tools</span></div>
+      </article>
+      <article class="proj reveal d2">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-language"></i></div><span class="proj-num">03</span></div>
+        <h3>Uchi Russkiy</h3>
+        <p data-i18n="p3">Interactive app for learning Russian in a fun, structured way.</p>
+        <div class="proj-meta"><span class="chip">Education</span><span class="chip">RU</span></div>
+      </article>
+      <article class="proj reveal">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-dragon"></i></div><span class="proj-num">04</span></div>
+        <h3>LabiibChine</h3>
+        <p data-i18n="p4">Beginner-friendly Mandarin learning platform with progressive lessons.</p>
+        <div class="proj-meta"><span class="chip">Education</span><span class="chip">ZH</span></div>
+      </article>
+      <article class="proj reveal d1">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-torii-gate"></i></div><span class="proj-num">05</span></div>
+        <h3>Kotoba N5</h3>
+        <p data-i18n="p5">Japanese vocabulary memorization app for JLPT N5 level.</p>
+        <div class="proj-meta"><span class="chip">Education</span><span class="chip">JP</span></div>
+      </article>
+      <article class="proj reveal d2">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-pen-fancy"></i></div><span class="proj-num">06</span></div>
+        <h3>Hiragana</h3>
+        <p data-i18n="p6">Focused app for reading and writing Hiragana with interactive drills.</p>
+        <div class="proj-meta"><span class="chip">Education</span><span class="chip">JP</span></div>
+      </article>
+      <article class="proj reveal">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-book-quran"></i></div><span class="proj-num">07</span></div>
+        <h3>NgajiKu</h3>
+        <p data-i18n="p7">Digital companion for learning Quran recitation with complete features.</p>
+        <div class="proj-meta"><span class="chip">Islamic</span><span class="chip">App</span></div>
+      </article>
+      <article class="proj reveal d1">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-list-check"></i></div><span class="proj-num">08</span></div>
+        <h3>Study Planner</h3>
+        <p data-i18n="p8">To-do list and study planner for effective time management.</p>
+        <div class="proj-meta"><span class="chip">Productivity</span><span class="chip">App</span></div>
+      </article>
+      <article class="proj reveal d2">
+        <div class="proj-top"><div class="proj-ico"><i class="fas fa-children"></i></div><span class="proj-num">09</span></div>
+        <h3>LABIIB Parent</h3>
+        <p data-i18n="p9">Educational and parenting support app for guiding children's growth.</p>
+        <div class="proj-meta"><span class="chip">Family</span><span class="chip">App</span></div>
+      </article>
+    </div>
+  </div>
+
+  <!-- CERTIFICATES -->
+  <div class="panel" id="certificates">
+    <div class="cert-grid">
+      <article class="cert reveal" data-img="cert2.jpg">
+        <div class="cert-img"><img src="cert2.jpg" alt="Russian Language Certificate" loading="lazy"></div>
+        <div class="cert-body">
+          <h3 data-i18n="c1t">Russian Language Proficiency (CEFR B1/B2)</h3>
+          <p data-i18n="c1d">Certified intermediate/advanced Russian based on CEFR standards.</p>
+          <span class="cert-date"><i class="fas fa-calendar"></i> 2024</span>
+        </div>
+      </article>
+      <article class="cert reveal d1" data-img="cert1.jpg">
+        <div class="cert-img"><img src="cert1.jpg" alt="BahasaKita Certificate" loading="lazy"></div>
+        <div class="cert-body">
+          <h3 data-i18n="c2t">BahasaKita.id Digital Language Certificate</h3>
+          <p data-i18n="c2d">Official participant of "Learning Languages in the Digital Era" webinar.</p>
+          <span class="cert-date"><i class="fas fa-calendar"></i> Oct 21, 2021</span>
+        </div>
+      </article>
+      <article class="cert reveal d2" data-img="cert3.jpg">
+        <div class="cert-img"><img src="cert3.jpg" alt="PORSIMAPTAR Certificate" loading="lazy"></div>
+        <div class="cert-body">
+          <h3 data-i18n="c3t">PORSIMAPTAR XXI "Eye of Universe"</h3>
+          <p data-i18n="c3d">Official participant of national astronomy &amp; science webinar.</p>
+          <span class="cert-date"><i class="fas fa-calendar"></i> Oct 19–21, 2021</span>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- TECH -->
+  <div class="panel" id="tech">
+    <div class="tech-grid">
+      <div class="tech-cat reveal">
+        <h4><i class="fas fa-code-branch"></i><span data-i18n="t1">Development</span></h4>
+        <div class="tech-list">
+          <span class="tech-pill"><i class="fab fa-github"></i>GitHub</span>
+          <span class="tech-pill"><i class="fas fa-server"></i>Netlify</span>
+          <span class="tech-pill"><i class="fas fa-triangle"></i>Vercel</span>
+          <span class="tech-pill"><i class="fas fa-terminal"></i>Termux</span>
+        </div>
+      </div>
+      <div class="tech-cat reveal d1">
+        <h4><i class="fas fa-brain"></i><span data-i18n="t2">AI &amp; LLM</span></h4>
+        <div class="tech-list">
+          <span class="tech-pill"><i class="fas fa-sparkles"></i>Gemini</span>
+          <span class="tech-pill"><i class="fas fa-comment-dots"></i>ChatGPT</span>
+          <span class="tech-pill"><i class="fas fa-water"></i>DeepSeek</span>
+          <span class="tech-pill"><i class="fas fa-trophy"></i>LMArena</span>
+          <span class="tech-pill"><i class="fas fa-cloud"></i>Qwen</span>
+          <span class="tech-pill"><i class="fas fa-otter"></i>Ollama</span>
+          <span class="tech-pill"><i class="fas fa-face-smile"></i>Hugging Face</span>
+        </div>
+      </div>
+      <div class="tech-cat reveal d2">
+        <h4><i class="fas fa-shield-halved"></i><span data-i18n="t3">Security &amp; OS</span></h4>
+        <div class="tech-list">
+          <span class="tech-pill"><i class="fab fa-linux"></i>Linux</span>
+          <span class="tech-pill"><i class="fas fa-terminal"></i>Bash</span>
+          <span class="tech-pill"><i class="fas fa-network-wired"></i>Networking</span>
+          <span class="tech-pill"><i class="fas fa-lock"></i>Cryptography</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-head reveal">
+    <span class="eyebrow" data-i18n="cont_eyebrow">Contact</span>
+    <h2 data-i18n="cont_title">Let's build something <em>together</em></h2>
+    <p data-i18n="cont_lede">Open for collaboration, learning, or just a good conversation.</p>
+  </div>
+
+  <div class="contact-wrap">
+    <form class="contact-form card reveal" id="contactForm">
+      <div class="field">
+        <input type="text" id="name" placeholder=" " required>
+        <label for="name" data-i18n="f_name">Your name</label>
+      </div>
+      <div class="field">
+        <input type="email" id="email" placeholder=" " required>
+        <label for="email" data-i18n="f_email">Your email</label>
+      </div>
+      <div class="field">
+        <textarea id="message" placeholder=" " required></textarea>
+        <label for="message" data-i18n="f_msg">Your message...</label>
+      </div>
+      <button type="submit" class="btn btn-primary" style="justify-content:center">
+        <i class="fas fa-paper-plane"></i> <span data-i18n="f_send">Send Message</span>
+      </button>
+    </form>
+
+    <div class="contact-info card reveal d1">
+      <div>
+        <h3 data-i18n="ci_title">Find me elsewhere</h3>
+        <p data-i18n="ci_lede" style="margin-top:8px">I usually reply within a day. Feel free to reach out through any channel below.</p>
+      </div>
+      <a class="contact-item" href="mailto:anakbahasainternational@gmail.com">
+        <span class="ci"><i class="fas fa-envelope"></i></span>
+        <div><b data-i18n="ci_email">Email</b><span>anakbahasainternational@gmail.com</span></div>
+      </a>
+      <a class="contact-item" href="https://www.instagram.com/xiaobi_03?stkn=MzNja3JvN3NuMTVl" target="_blank" rel="noopener">
+        <span class="ci"><i class="fab fa-instagram"></i></span>
+        <div><b data-i18n="ci_ig">Instagram</b><span>@xiaobi_03</span></div>
+      </a>
+      <a class="contact-item" href="https://www.tiktok.com/@xiao_bi_?_r=1&_t=ZS-9A1m0faOOQ8" target="_blank" rel="noopener">
+        <span class="ci"><i class="fab fa-tiktok"></i></span>
+        <div><b data-i18n="ci_tt">TikTok</b><span>@xiao_bi_</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2024 <a href="#home">Labiib Al Ghoffuur</a> · <span data-i18n="footer_txt">Built from scratch, not from templates</span> <i class="fas fa-heart"></i></p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lbClose" aria-label="Close">×</button>
+  <img src="" alt="Certificate preview" id="lbImg">
+</div>
+
+<script>
+/* ===== TRANSLATIONS ===== */
+const T = {
+  id:{
+    nav_home:'Beranda',nav_about:'Tentang',nav_portfolio:'Portofolio',nav_contact:'Kontak',
+    hero_status:'Terbuka untuk kolaborasi &amp; belajar',
+    hero_hi:'Hai, saya',
+    hero_lede:'Pembelajar mandiri yang antusias pada <strong>keamanan siber</strong> dan <strong>pengembangan aplikasi</strong>. Saya menguasai bahasa Rusia, Spanyol, dan Turki — yang melatih pola pikir analitis dan adaptif saya.',
+    btn_projects:'Lihat Proyek',btn_contact:'Hubungi Saya',photo_hint:'Ketuk untuk membuka',
+    about_eyebrow:'Tentang',about_title:'Perkenalan <em>singkat</em>',
+    about_lede:'Latar belakang, pengalaman, dan alat yang saya pakai untuk membangun.',
+    about_exp:'Organisasi &amp; Pengalaman',about_exp_sub:'kepemimpinan · disiplin · kerja sama',
+    about_skills:'Keahlian &amp; Keterampilan',about_skills_sub:'yang benar-benar saya kerjakan',
+    s1:'Fundamental Keamanan Siber',s2:'Pengembangan Web &amp; Mobile',s3:'Integrasi AI',
+    s4:'RU · ES · TR',s5:'Linux &amp; Terminal',s6:'Pengembangan Aplikasi',s7:'Berpikir Analitis',
+    stat1:'Proyek',stat2:'Organisasi',stat3:'Bahasa',stat4:'Sertifikat',
+    port_eyebrow:'Portofolio',port_title:'Karya &amp; <em>bukti terpilih</em>',
+    port_lede:'Hal-hal yang telah saya bangun, pelajari, dan raih.',
+    tab_projects:'Proyek',tab_certs:'Sertifikat',tab_tech:'Tech Stack',
+    p1:'Asisten AI pribadi untuk otomasi tugas harian dan produktivitas.',
+    p2:'Kumpulan script dan alat otomasi untuk analisis keamanan siber.',
+    p3:'Aplikasi interaktif untuk belajar bahasa Rusia secara terstruktur.',
+    p4:'Platform belajar Mandarin yang ramah pemula dengan pelajaran bertahap.',
+    p5:'Aplikasi hafalan kosakata Jepang level JLPT N5.',
+    p6:'Aplikasi fokus untuk membaca &amp; menulis Hiragana dengan latihan interaktif.',
+    p7:'Kompanion digital untuk belajar mengaji dan Al-Qur\'an.',
+    p8:'To-do list dan perencana studi untuk manajemen waktu yang efektif.',
+    p9:'Aplikasi pendukung edukasi &amp; parenting untuk mendampingi tumbuh kembang anak.',
+    c1t:'Kemampuan Bahasa Rusia (CEFR B1/B2)',c1d:'Sertifikasi bahasa Rusia tingkat menengah/mahir sesuai standar CEFR.',
+    c2t:'Sertifikat Bahasa Digital BahasaKita.id',c2d:'Peserta resmi webinar "Belajar Bahasa di Era Digital".',
+    c3t:'PORSIMAPTAR XXI "Eye of Universe"',c3d:'Peserta resmi webinar astronomi &amp; sains nasional.',
+    t1:'Pengembangan',t2:'AI &amp; LLM',t3:'Keamanan &amp; OS',
+    cont_eyebrow:'Kontak',cont_title:'Mari bangun sesuatu <em>bersama</em>',
+    cont_lede:'Terbuka untuk kolaborasi, belajar, atau sekadar ngobrol seru.',
+    f_name:'Nama kamu',f_email:'Email kamu',f_msg:'Pesan kamu...',f_send:'Kirim Pesan',
+    ci_title:'Temukan saya di',ci_lede:'Saya biasanya membalas dalam sehari. Silakan hubungi lewat channel mana pun di bawah ini.',
+    ci_email:'Email',ci_ig:'Instagram',ci_tt:'TikTok',
+    footer_txt:'Dibuat dari nol, bukan dari template',
+    toast:'Terima kasih! Pesan kamu sudah terkirim.'
+  },
+  en:{
+    nav_home:'Home',nav_about:'About',nav_portfolio:'Portfolio',nav_contact:'Contact',
+    hero_status:'Open to collaboration &amp; learning',
+    hero_hi:"Hi, I'm",
+    hero_lede:'A self-taught learner passionate about <strong>cybersecurity</strong> and <strong>application development</strong>. I speak Russian, Spanish, and Turkish — languages that sharpen my analytical thinking and adaptability.',
+    btn_projects:'View Projects',btn_contact:'Contact Me',photo_hint:'Tap to reveal',
+    about_eyebrow:'About',about_title:'A quick <em>introduction</em>',
+    about_lede:'Background, experience, and the tools I use to build things.',
+    about_exp:'Organizations &amp; Experience',about_exp_sub:'leadership · discipline · teamwork',
+    about_skills:'Skills &amp; Expertise',about_skills_sub:'what I actually do',
+    s1:'Cybersecurity Fundamentals',s2:'Web &amp; Mobile Development',s3:'AI Integration',
+    s4:'RU · ES · TR',s5:'Linux &amp; Terminal',s6:'App Development',s7:'Analytical Thinking',
+    stat1:'Projects',stat2:'Organizations',stat3:'Languages',stat4:'Certificates',
+    port_eyebrow:'Portfolio',port_title:'Selected <em>work &amp; proofs</em>',
+    port_lede:"Things I've built, learned, and earned.",
+    tab_projects:'Projects',tab_certs:'Certificates',tab_tech:'Tech Stack',
+    p1:'Personal AI assistant built to automate daily tasks and boost productivity.',
+    p2:'Collection of automation scripts and tools for security analysis.',
+    p3:'Interactive app for learning Russian in a fun, structured way.',
+    p4:'Beginner-friendly Mandarin learning platform with progressive lessons.',
+    p5:'Japanese vocabulary memorization app for JLPT N5 level.',
+    p6:'Focused app for reading and writing Hiragana with interactive drills.',
+    p7:'Digital companion for learning Quran recitation with complete features.',
+    p8:'To-do list and study planner for effective time management.',
+    p9:"Educational and parenting support app for guiding children's growth.",
+    c1t:'Russian Language Proficiency (CEFR B1/B2)',c1d:'Certified intermediate/advanced Russian based on CEFR standards.',
+    c2t:'BahasaKita.id Digital Language Certificate',c2d:'Official participant of "Learning Languages in the Digital Era" webinar.',
+    c3t:'PORSIMAPTAR XXI "Eye of Universe"',c3d:'Official participant of national astronomy &amp; science webinar.',
+    t1:'Development',t2:'AI &amp; LLM',t3:'Security &amp; OS',
+    cont_eyebrow:'Contact',cont_title:"Let's build something <em>together</em>",
+    cont_lede:'Open for collaboration, learning, or just a good conversation.',
+    f_name:'Your name',f_email:'Your email',f_msg:'Your message...',f_send:'Send Message',
+    ci_title:'Find me elsewhere',ci_lede:'I usually reply within a day. Feel free to reach out through any channel below.',
+    ci_email:'Email',ci_ig:'Instagram',ci_tt:'TikTok',
+    footer_txt:'Built from scratch, not from templates',
+    toast:'Thank you! Your message has been sent.'
+  }
+};
+
+/* ===== STATE ===== */
+let lang = localStorage.getItem('lang') || 'id';
+let theme = localStorage.getItem('theme') || 'dark';
+
+/* ===== APPLY LANG ===== */
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.getAttribute('data-i18n');
+    if(T[lang][k] !== undefined) el.innerHTML = T[lang][k];
+  });
+  document.getElementById('langBtn').textContent = lang === 'id' ? 'EN' : 'ID';
+  localStorage.setItem('lang', lang);
+}
+
+/* ===== APPLY THEME ===== */
+function applyTheme(){
+  document.body.classList.toggle('light', theme === 'light');
+  const icon = document.querySelector('#themeBtn i');
+  icon.className = theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+  localStorage.setItem('theme', theme);
+}
+
+/* ===== MARQUEE ===== */
+const marqueeItems = [
+  '<i>cybersecurity</i>','linux','russian','spanish','turkish',
+  'app development','<i>ai integration</i>','terminal','automation',
+  'paskibra','self-taught','networking','<i>polyglot</i>'
+];
+const mTrack = document.getElementById('marquee');
+mTrack.innerHTML = [...marqueeItems, ...marqueeItems].map(t=>`<span>${t}</span>`).join('');
+
+/* ===== PRELOADER ===== */
+(function preload(){
+  const bar = document.getElementById('preBar');
+  const status = document.getElementById('preStatus');
+  const steps = ['booting kernel...','loading modules...','mounting assets...','ready.'];
+  let p = 0, s = 0;
+  const iv = setInterval(()=>{
+    p += Math.random()*16 + 4;
+    if(p >= 100){ p = 100; clearInterval(iv); }
+    bar.style.width = p + '%';
+    const idx = Math.min(steps.length-1, Math.floor(p/28));
+    if(idx !== s){ s = idx; status.textContent = steps[s]; }
+    if(p === 100){
+      setTimeout(()=>document.getElementById('preloader').classList.add('done'), 500);
+    }
+  }, 140);
+})();
+
+/* ===== REVEAL ON SCROLL ===== */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.12, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ===== COUNTERS ===== */
+const counterIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting && !e.target.dataset.done){
+      e.target.dataset.done = '1';
+      const target = +e.target.dataset.target;
+      const dur = 1400;
+      const t0 = performance.now();
+      function tick(now){
+        const p = Math.min(1,(now-t0)/dur);
+        const eased = 1 - Math.pow(1-p,3);
+        e.target.textContent = Math.round(target*eased);
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+  });
+},{threshold:.5});
+document.querySelectorAll('.stat-num').forEach(el=>counterIO.observe(el));
+
+/* ===== NAV ACTIVE + SMOOTH SCROLL ===== */
+const sections = [...document.querySelectorAll('section[id]')];
+const navLinks = [...document.querySelectorAll('.nav-links a')];
+window.addEventListener('scroll', ()=>{
+  const y = window.scrollY + 200;
+  let cur = 'home';
+  sections.forEach(s=>{ if(y >= s.offsetTop) cur = s.id; });
+  navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+cur));
+},{passive:true});
+
+/* ===== TABS ===== */
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const id = btn.dataset.tab;
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b===btn));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===id));
+  });
+});
+
+/* ===== THEME + LANG BUTTONS ===== */
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  theme = theme === 'dark' ? 'light' : 'dark';
+  applyTheme();
+});
+document.getElementById('langBtn').addEventListener('click',()=>{
+  lang = lang === 'id' ? 'en' : 'id';
+  applyLang();
+});
+
+/* ===== PHOTO REVEAL ===== */
+document.getElementById('photoStack').addEventListener('click',function(){
+  this.classList.toggle('revealed');
+});
+
+/* ===== LIGHTBOX ===== */
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+document.querySelectorAll('.cert').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const src = c.dataset.img;
+    if(!src) return;
+    lbImg.src = src;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+function closeLB(){
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(()=>{ lbImg.src = ''; },300);
+}
+document.getElementById('lbClose').addEventListener('click', closeLB);
+lb.addEventListener('click', e=>{ if(e.target === lb) closeLB(); });
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeLB(); });
+
+/* ===== FORM ===== */
+document.getElementById('contactForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  const original = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-check"></i> ' + (lang==='id'?'Terkirim!':'Sent!');
+  btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+  setTimeout(()=>{
+    btn.innerHTML = original;
+    btn.style.background = '';
+    e.target.reset();
+  }, 2200);
+});
+
+/* ===== INIT ===== */
+applyTheme();
+applyLang();
+
+/* keyboard shortcut: T = theme, L = language */
+document.addEventListener('keydown', e=>{
+  if(e.target.matches('input,textarea')) return;
+  if(e.key === 't' || e.key === 'T'){ theme = theme==='dark'?'light':'dark'; applyTheme(); }
+  if(e.key === 'l' || e.key === 'L'){ lang = lang==='id'?'en':'id'; applyLang(); }
+});
+</script>
+</body>
+</html>
